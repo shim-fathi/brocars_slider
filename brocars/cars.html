@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Cars — Bro Cars</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* CAR DETAIL MODAL */
+    .car-modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(10,10,10,0.88);
+      z-index: 9000;
+      overflow-y: auto;
+      padding: 2rem 1rem;
+      backdrop-filter: blur(4px);
+    }
+    .car-modal-overlay.active { display: flex; align-items: flex-start; justify-content: center; }
+    .car-modal {
+      background: var(--white);
+      width: 100%;
+      max-width: 900px;
+      position: relative;
+      margin: auto;
+      animation: modalIn 0.35s var(--ease-out);
+    }
+    @keyframes modalIn { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    .modal-close {
+      position: absolute; top:1.2rem; right:1.2rem;
+      width:38px; height:38px;
+      background:var(--black); color:var(--white);
+      border:none; font-size:1.2rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; z-index:10;
+      transition:background 0.2s;
+    }
+    .modal-close:hover { background:var(--silver-dark); }
+    /* ── IMAGE SLIDER ── */
+    .modal-slider {
+      position: relative;
+      background: #111;
+      height: 300px;
+      overflow: hidden;
+      user-select: none;
+    }
+    .slider-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+    }
+    .slider-slide {
+      flex: 0 0 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .slider-slide-bg {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.55);
+      transform: scale(1.05);
+      transition: transform 6s ease;
+    }
+    .slider-slide.active .slider-slide-bg { transform: scale(1); }
+    .slider-slide-content {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .slider-emoji { font-size: 5.5rem; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.7)); }
+    .slider-angle-label {
+      font-family: var(--ff-display);
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      background: rgba(0,0,0,0.4);
+      padding: 0.25rem 0.7rem;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    /* Arrow buttons */
+    .slider-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 40px; height: 40px;
+      background: rgba(0,0,0,0.55);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      color: #fff; font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      z-index: 10; transition: background 0.2s, border-color 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .slider-btn:hover { background: rgba(255,215,0,0.85); border-color: transparent; color: #000; }
+    .slider-btn.prev { left: 1rem; }
+    .slider-btn.next { right: 1rem; }
+    /* Dot indicators */
+    .slider-dots {
+      position: absolute; bottom: 0.85rem; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 0.45rem; z-index: 10;
+    }
+    .slider-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      border: none; cursor: pointer; padding: 0;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .slider-dot.active { background: var(--accent); transform: scale(1.4); }
+    /* Thumbnail strip */
+    .slider-thumbs {
+      display: flex; gap: 0; background: #1a1a1a; border-bottom: 2px solid var(--accent);
+    }
+    .slider-thumb {
+      flex: 1; padding: 0.55rem 0.4rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+      cursor: pointer; border: none; background: transparent;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.2s;
+    }
+    .slider-thumb:last-child { border-right: none; }
+    .slider-thumb:hover { background: rgba(255,255,255,0.06); }
+    .slider-thumb.active { background: rgba(255,215,0,0.12); }
+    .slider-thumb-emoji { font-size: 1.5rem; }
+    .slider-thumb-label {
+      font-family: var(--ff-display); font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+    }
+    .slider-thumb.active .slider-thumb-label { color: var(--accent); }
+
+    .modal-badge-row { position:absolute; bottom:1rem; left:1.5rem; display:flex; gap:0.5rem; z-index:10; }
+    .modal-tag { padding:0.3rem 0.8rem; background:var(--accent); color:var(--black); font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+    .modal-tag.green { background:#27ae60; color:#fff; }
+    .modal-tag.blue  { background:#2980b9; color:#fff; }
+
+    @media(max-width:768px){
+      .modal-slider { height: 220px; }
+      .slider-emoji { font-size: 4rem; }
+      .slider-thumb-emoji { font-size: 1.2rem; }
+      .slider-btn { width:32px; height:32px; font-size:0.9rem; }
+    }
+    .modal-body { padding:2rem 2.5rem 2.5rem; }
+    .modal-header-row { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+    .modal-title { font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; color:var(--black); line-height:1; }
+    .modal-year-type { font-size:0.85rem; color:var(--muted); margin-top:0.3rem; letter-spacing:0.1em; text-transform:uppercase; }
+    .modal-price-box { text-align:right; }
+    .modal-price { font-family:var(--ff-display); font-size:clamp(1.5rem,3vw,2.2rem); font-weight:900; color:var(--black); }
+    .modal-price-note { font-size:0.78rem; color:var(--muted); }
+    .modal-specs-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--light); border:1px solid var(--light); margin-bottom:2rem; }
+    .modal-spec { background:var(--white); padding:1rem; text-align:center; }
+    .modal-spec-val { font-family:var(--ff-display); font-size:1.2rem; font-weight:800; color:var(--black); }
+    .modal-spec-label { font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-top:0.2rem; }
+    .modal-section-title { font-family:var(--ff-display); font-size:1.1rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--black); margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:2px solid var(--black); }
+    .modal-features-list { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:2rem; }
+    .modal-feature-item { display:flex; align-items:center; gap:0.5rem; font-size:0.88rem; color:var(--mid); }
+    .modal-feature-item::before { content:'✓'; color:var(--accent); font-weight:800; flex-shrink:0; }
+
+    /* PAYMENT TABS */
+    .payment-section { margin-bottom:2rem; }
+    .payment-tabs { display:flex; border:1.5px solid var(--light); margin-bottom:1.5rem; }
+    .pay-tab { flex:1; padding:0.75rem; background:var(--pale); border:none; border-right:1.5px solid var(--light); font-family:var(--ff-body); font-size:0.82rem; font-weight:600; color:var(--muted); cursor:pointer; transition:all 0.2s; text-align:center; }
+    .pay-tab:last-child { border-right:none; }
+    .pay-tab.active { background:var(--black); color:var(--white); }
+    .pay-tab:hover:not(.active) { background:var(--light); color:var(--black); }
+    .pay-panel { display:none; }
+    .pay-panel.active { display:block; }
+    .cash-summary { background:var(--pale); border:1.5px solid var(--light); padding:1.5rem; }
+    .cash-row { display:flex; justify-content:space-between; font-size:0.9rem; color:var(--mid); padding:0.5rem 0; border-bottom:1px solid var(--light); }
+    .cash-row:last-child { border-bottom:none; font-weight:700; color:var(--black); font-size:1rem; }
+    .cash-row span:last-child { font-weight:600; color:var(--black); }
+    .leasing-calc { background:var(--pale); border:1.5px solid var(--light); padding:1.5rem; }
+    .lease-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+    .lease-field label { display:block; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:0.4rem; }
+    .lease-field select, .lease-field input { width:100%; padding:0.6rem 0.8rem; border:1.5px solid var(--light); background:var(--white); font-family:var(--ff-body); font-size:0.88rem; color:var(--black); outline:none; }
+    .lease-result { background:var(--black); color:var(--white); padding:1.2rem 1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-top:1rem; }
+    .lease-result-label { font-size:0.82rem; color:var(--silver); }
+    .lease-result-amount { font-family:var(--ff-display); font-size:1.8rem; font-weight:900; }
+    .lease-banks { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem; }
+    .lease-bank-tag { padding:0.3rem 0.75rem; border:1.5px solid var(--light); font-size:0.75rem; font-weight:600; color:var(--mid); }
+    .tradein-info { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .tradein-box { padding:1.2rem; border:1.5px solid var(--light); background:var(--pale); }
+    .tradein-box h4 { font-size:0.95rem; margin-bottom:0.5rem; color:var(--black); }
+    .tradein-box p { font-size:0.83rem; color:var(--mid); line-height:1.6; }
+    .tradein-steps { margin-top:1rem; }
+    .tradein-step { display:flex; gap:0.75rem; align-items:flex-start; margin-bottom:0.75rem; font-size:0.85rem; color:var(--mid); }
+    .tradein-step-num { width:24px; height:24px; background:var(--black); color:var(--white); font-weight:800; font-size:0.75rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .modal-cta-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:2rem; }
+    .modal-cta-wa { display:flex; align-items:center; justify-content:center; gap:0.6rem; padding:1rem; background:#25D366; color:var(--white); font-family:var(--ff-body); font-size:0.9rem; font-weight:700; border:none; cursor:pointer; text-decoration:none; transition:background 0.2s; }
+    .modal-cta-wa:hover { background:#1da851; }
+    .modal-cta-wa svg { width:20px; height:20px; fill:currentColor; }
+    .modal-cta-book { display:flex; align-items:center; justify-content:center; padding:1rem; background:var(--black); color:var(--white); font-family:var(--ff-body); font-size:0.9rem; font-weight:700; border:none; cursor:pointer; text-decoration:none; transition:background 0.2s; }
+    .modal-cta-book:hover { background:var(--dark); }
+
+    /* SOLD CARS */
+    .sold-section { background:var(--pale); }
+    .sold-overlay-stamp { position:absolute; inset:0; background:rgba(10,10,10,0.65); display:flex; align-items:center; justify-content:center; z-index:5; pointer-events:none; }
+    .sold-stamp { border:4px solid #e74c3c; color:#e74c3c; font-family:var(--ff-display); font-size:2.2rem; font-weight:900; letter-spacing:0.15em; padding:0.4rem 1.2rem; transform:rotate(-12deg); text-shadow:0 2px 8px rgba(0,0,0,0.5); }
+    .sold-card-name { color:var(--muted); }
+    .sold-card-price { text-decoration:line-through; color:var(--muted); font-size:1rem; }
+    .sold-date { font-size:0.78rem; color:var(--muted); margin-top:0.3rem; }
+
+    /* WHATSAPP FLOAT */
+    .whatsapp-float { position:fixed; bottom:2rem; right:2rem; width:58px; height:58px; background:#25D366; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(37,211,102,0.5); z-index:8000; transition:transform 0.25s, box-shadow 0.25s; text-decoration:none; }
+    .whatsapp-float:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(37,211,102,0.7); }
+    .whatsapp-float svg { width:30px; height:30px; }
+
+    @media(max-width:768px){
+      .modal-specs-grid{grid-template-columns:repeat(2,1fr)}
+      .modal-features-list{grid-template-columns:1fr}
+      .modal-cta-row{grid-template-columns:1fr}
+      .lease-row{grid-template-columns:1fr}
+      .tradein-info{grid-template-columns:1fr}
+      .modal-body{padding:1.5rem}
+      .pay-tab{font-size:0.72rem;padding:0.6rem 0.4rem}
+    }
+    /* ═══ BUY NOW PAYMENT MODAL ═══ */
+    .pay-modal-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(10,10,10,0.92); z-index:9500;
+      overflow-y:auto; padding:2rem 1rem;
+      backdrop-filter:blur(6px);
+    }
+    .pay-modal-overlay.active { display:flex; align-items:flex-start; justify-content:center; }
+    .pay-modal {
+      background:var(--white); width:100%; max-width:720px;
+      position:relative; margin:auto;
+      animation:modalIn 0.35s var(--ease-out);
+    }
+    /* Header banner */
+    .pay-modal-header {
+      display:flex; align-items:stretch; gap:0; overflow:hidden;
+      background:var(--black); min-height:120px;
+    }
+    .pay-modal-car-img {
+      width:200px; flex-shrink:0;
+      background-size:cover; background-position:center;
+      filter:brightness(0.75);
+    }
+    .pay-modal-header-info {
+      flex:1; padding:1.4rem 1.8rem;
+      display:flex; flex-direction:column; justify-content:center; gap:0.3rem;
+    }
+    .pay-modal-badge { display:inline-block; padding:0.2rem 0.65rem; background:var(--accent); color:var(--black); font-size:0.68rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; width:fit-content; }
+    .pay-modal-car-name { font-family:var(--ff-display); font-size:clamp(1.3rem,3vw,1.9rem); font-weight:900; color:var(--white); line-height:1.1; }
+    .pay-modal-car-sub { font-size:0.78rem; color:rgba(255,255,255,0.55); letter-spacing:0.08em; text-transform:uppercase; }
+    .pay-modal-price-tag { font-family:var(--ff-display); font-size:1.4rem; font-weight:900; color:var(--accent); margin-top:0.2rem; }
+    /* Step bar */
+    .pay-steps-bar {
+      display:flex; align-items:center; padding:1rem 2rem;
+      background:var(--pale); border-bottom:2px solid var(--light); gap:0;
+    }
+    .pay-step { display:flex; align-items:center; gap:0.5rem; flex:0 0 auto; }
+    .pay-step-num {
+      width:28px; height:28px; border-radius:50%;
+      background:var(--light); color:var(--muted);
+      font-size:0.78rem; font-weight:800;
+      display:flex; align-items:center; justify-content:center;
+      transition:all 0.3s;
+    }
+    .pay-step.active .pay-step-num { background:var(--black); color:var(--white); }
+    .pay-step.done .pay-step-num { background:#27ae60; color:#fff; }
+    .pay-step-lbl { font-size:0.75rem; font-weight:600; color:var(--muted); white-space:nowrap; transition:color 0.3s; }
+    .pay-step.active .pay-step-lbl { color:var(--black); }
+    .pay-step-line { flex:1; height:2px; background:var(--light); margin:0 0.75rem; min-width:20px; }
+    /* Body */
+    .pay-modal-body { padding:2rem; }
+    .pay-step-panel { display:none; }
+    .pay-step-panel.active { display:block; }
+    .pay-method-title { font-family:var(--ff-display); font-size:1rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--black); margin-bottom:1.2rem; padding-bottom:0.5rem; border-bottom:2px solid var(--black); }
+    /* Method cards */
+    .pay-method-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; margin-bottom:1.5rem; }
+    .pay-method-card {
+      position:relative; border:2px solid var(--light); padding:1.2rem 1rem 1rem;
+      cursor:pointer; transition:all 0.2s; text-align:center; user-select:none;
+      display:flex; flex-direction:column; align-items:center; gap:0.3rem;
+    }
+    .pay-method-card input { position:absolute; opacity:0; pointer-events:none; }
+    .pay-method-card:hover { border-color:#aaa; }
+    .pay-method-card.selected { border-color:var(--black); background:var(--pale); }
+    .pm-icon { font-size:1.8rem; }
+    .pm-label { font-weight:800; font-size:0.88rem; color:var(--black); }
+    .pm-desc { font-size:0.72rem; color:var(--muted); line-height:1.5; }
+    .pm-check { position:absolute; top:0.5rem; right:0.5rem; width:18px; height:18px; background:var(--black); color:var(--white); font-size:0.6rem; display:none; align-items:center; justify-content:center; border-radius:50%; }
+    .pay-method-card.selected .pm-check { display:flex; }
+    /* Detail panels */
+    .pm-detail { display:none; }
+    .pm-detail.active { display:block; }
+    /* Breakdown */
+    .pay-breakdown { background:var(--pale); border:1.5px solid var(--light); padding:1.2rem; margin-bottom:0.5rem; }
+    .pb-row { display:flex; justify-content:space-between; font-size:0.88rem; color:var(--mid); padding:0.45rem 0; border-bottom:1px solid var(--light); }
+    .pb-row:last-child { border-bottom:none; }
+    .pb-total { font-weight:800; font-size:0.95rem; color:var(--black) !important; }
+    .pb-total span:last-child { color:var(--black); }
+    .pb-note { font-size:0.75rem; color:var(--muted); margin-top:0.5rem; }
+    /* Lease calc */
+    .pay-lease-calc { background:var(--pale); border:1.5px solid var(--light); padding:1.2rem; }
+    .plc-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem; margin-bottom:1rem; }
+    .plc-field label { display:block; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:0.35rem; }
+    .plc-field select { width:100%; padding:0.55rem 0.7rem; border:1.5px solid var(--light); background:var(--white); font-family:var(--ff-body); font-size:0.85rem; color:var(--black); outline:none; }
+    .plc-result { background:var(--black); color:var(--white); padding:1rem 1.2rem; display:flex; justify-content:space-between; align-items:center; }
+    .plc-banks { margin-top:0.75rem; display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center; font-size:0.75rem; color:var(--muted); }
+    .plc-bank { padding:0.2rem 0.6rem; border:1.5px solid var(--light); font-size:0.72rem; font-weight:600; color:var(--mid); }
+    /* Step buttons */
+    .pay-next-btn { background:var(--black); color:var(--white); border:none; padding:1rem 2rem; font-family:var(--ff-body); font-size:0.92rem; font-weight:700; cursor:pointer; transition:background 0.2s; }
+    .pay-next-btn:hover:not(:disabled) { background:#333; }
+    .pay-next-btn:disabled { background:var(--light); color:var(--muted); cursor:not-allowed; }
+    .pay-back-btn { background:transparent; color:var(--black); border:2px solid var(--light); padding:1rem 1.5rem; font-family:var(--ff-body); font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    .pay-back-btn:hover { border-color:var(--black); }
+    .pay-step1-next { margin-top:1.5rem; display:flex; justify-content:flex-end; }
+    /* Form */
+    .pay-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .pay-form-field label { display:block; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:0.35rem; }
+    .pay-form-field input, .pay-form-field textarea { width:100%; padding:0.7rem 0.9rem; border:1.5px solid var(--light); font-family:var(--ff-body); font-size:0.88rem; color:var(--black); outline:none; transition:border-color 0.2s; box-sizing:border-box; }
+    .pay-form-field input:focus, .pay-form-field textarea:focus { border-color:var(--black); }
+    .pay-form-field textarea { resize:vertical; }
+    /* Confirm */
+    .pay-confirm-card { background:var(--pale); border:1.5px solid var(--light); padding:1.5rem; margin-bottom:1.2rem; }
+    .pay-confirm-row { display:flex; justify-content:space-between; align-items:flex-start; padding:0.5rem 0; border-bottom:1px solid var(--light); font-size:0.88rem; color:var(--mid); }
+    .pay-confirm-row:last-child { border-bottom:none; }
+    .pay-confirm-row strong { color:var(--black); font-weight:700; }
+    .pay-security-row { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; }
+    .pay-security-row span { font-size:0.78rem; color:var(--mid); font-weight:600; }
+    .pay-final-btns { display:flex; gap:1rem; }
+    .pay-confirm-btn { flex:1; background:var(--accent); color:var(--black); border:none; padding:1.1rem 1.5rem; font-family:var(--ff-body); font-size:0.95rem; font-weight:800; cursor:pointer; transition:background 0.2s; text-align:center; line-height:1.4; }
+    .pay-confirm-btn:hover { background:#e6c200; }
+    /* Success overlay */
+    .pay-success-overlay { display:none; position:fixed; inset:0; background:rgba(10,10,10,0.95); z-index:9999; align-items:center; justify-content:center; }
+    .pay-success-overlay.active { display:flex; }
+    .pay-success-box { background:var(--white); max-width:480px; width:90%; padding:3rem 2.5rem; text-align:center; animation:modalIn 0.4s var(--ease-out); }
+    .pay-success-icon { font-size:4rem; margin-bottom:1rem; }
+    .pay-success-title { font-family:var(--ff-display); font-size:2rem; font-weight:900; color:var(--black); margin-bottom:0.75rem; }
+    .pay-success-sub { color:var(--mid); font-size:0.92rem; line-height:1.7; margin-bottom:1rem; }
+    .pay-success-ref { font-family:var(--ff-display); font-size:0.85rem; font-weight:700; color:var(--muted); background:var(--pale); padding:0.5rem 1rem; border:1.5px solid var(--light); display:inline-block; letter-spacing:0.1em; }
+    @media(max-width:600px){
+      .pay-method-grid { grid-template-columns:1fr; }
+      .plc-row { grid-template-columns:1fr 1fr; }
+      .pay-form-grid { grid-template-columns:1fr; }
+      .pay-modal-car-img { display:none; }
+      .pay-steps-bar { padding:0.75rem 1rem; }
+      .pay-step-lbl { display:none; }
+      .pay-modal-body { padding:1.2rem; }
+      .pay-final-btns { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<header class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="logo">
+      <img src="logo.png" alt="Bro Cars" class="logo-img"/>
+      <span class="logo-text">BRO<span class="logo-accent">CARS</span></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-link active">Home</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="cars.html" class="nav-link">Our stocks</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+      <a href="cars.html" class="btn-nav">View vehicles →</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="page-hero-bg-text">VEHICLES</div>
+  <div class="container">
+    <div class="page-hero-content">
+      <div class="page-breadcrumb"><a href="index.html">Home</a> <span>/</span> Our Cars</div>
+      <h1 class="page-hero-title">Our Full<br/><span>Stock.</span></h1>
+      
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section" style="padding-top:3rem;">
+  <div class="container">
+    <div class="cars-grid cars-grid-full" id="carsGrid">
+
+      <article class="car-card reveal" data-category="suv"
+        data-name="Peugeot 2008" data-year="2013" data-type="SUV" data-emoji="🚘" data-price="620000"
+        data-badge="AVAILABLE" data-badge-class="" data-engine="1.6L Diesel" data-trans="manual"
+        data-mileage="95,000 km" data-color="Brown"
+        data-features="Touchscreen Infotainment,Bluetooth Connectivity,Cruise Control,Rear Parking Sensors,Alloy Wheels,LED Daytime Running Lights,Roof Rails,Air Conditioning,Multi-function Steering Wheel,ABS Braking System">
+        <div class="car-img-box" style="overflow:hidden;">
+          <img src="images/peugo_1.jpeg" alt="Mercedes E300" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+          <div class="car-overlay"><button class="btn-overlay" onclick="openCarModal(this.closest('.car-card'))">View Details</button></div>
+          <div class="car-badge">AVAILABLE</div>
+        </div>
+        <div class="car-info">
+          <div class="car-meta"><span class="car-year">2023</span><span class="car-type">Sedan</span></div>
+          <h3 class="car-name">Peugeot 2008</h3>
+          <p class="car-desc"> Stylish compact SUV with modern features, comfortable interior and excellent fuel efficiency.</p>
+          <div class="car-specs-row"><span class="spec-tag">1.6L</span><span class="spec-tag">Manual</span><span class="spec-tag">95,000km</span></div>
+          <div class="car-footer">
+            <div class="car-price">Rs. 6,200,000</div>
+            <div class="car-actions-row">
+              <button class="btn-card-ghost" onclick="openCarModal(this.closest('.car-card'))">View Details</button>
+              <button class="btn-card-primary" onclick="openPaymentModal(this.closest('.car-card'))">Buy Now</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="car-card reveal" data-category="suv"
+        data-name="BMW X5 M Sport" data-year="2024" data-type="SUV" data-emoji="🚙" data-price="29000000"
+        data-badge="New" data-badge-class="new-badge" data-engine="3.0T Twin Turbo" data-trans="8-Speed Auto"
+        data-mileage="9,800 km" data-color="Alpine White"
+        data-features="xDrive AWD,Panoramic Glass Roof,Harman Kardon Sound,360° Cameras,Apple CarPlay &amp; Android Auto,Heated &amp; Massaging Seats,Adaptive Cruise Control,Live Cockpit Pro,Ambient Lighting,Power Tailgate,Head-Up Display,Parking Assistant Plus">
+        <div class="car-img-box" style="overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=700&q=80" alt="BMW X5 M Sport" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+          <div class="car-overlay"><button class="btn-overlay" onclick="openCarModal(this.closest('.car-card'))">View Details</button></div>
+          <div class="car-badge new-badge">COMING SOON</div>
+        </div>
+        <div class="car-info">
+          <div class="car-meta"><span class="car-year">2024</span><span class="car-type">SUV</span></div>
+          <h3 class="car-name">BMW X5 M Sport</h3>
+          <p class="car-desc">xDrive AWD · Panoramic roof · Harman Kardon · 360° cameras · Apple CarPlay.</p>
+          <div class="car-specs-row"><span class="spec-tag">3.0T</span><span class="spec-tag">AWD</span><span class="spec-tag">9,800km</span></div>
+          <div class="car-footer">
+            <div class="car-price">Rs. 29,000,000</div>
+            <div class="car-actions-row">
+              <button class="btn-card-ghost" onclick="openCarModal(this.closest('.car-card'))">View Details</button>
+              <button class="btn-card-primary" onclick="openPaymentModal(this.closest('.car-card'))">Buy Now</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="car-card reveal" data-category="electric"
+        data-name="Tesla Model 3 LR" data-year="2023" data-type="Electric" data-emoji="⚡" data-price="22000000"
+        data-badge="EV" data-badge-class="eco-badge" data-engine="Dual Motor Electric" data-trans="Single-Speed Auto"
+        data-mileage="14,200 km" data-color="Pearl White"
+        data-features="560km Full Charge Range,Full Self-Driving Package,Over-the-Air Updates,White Premium Interior,Glass Roof,15-inch Touchscreen,Autopilot,Wireless Charging,Sentry Mode,Dog Mode,Premium Audio,Fast Charging Support">
+        <div class="car-img-box" style="overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=700&q=80" alt="Tesla Model 3 LR" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+          <div class="car-overlay"><button class="btn-overlay" onclick="openCarModal(this.closest('.car-card'))">View Details</button></div>
+          <div class="car-badge eco-badge">COMING SOON</div>
+        </div>
+        <div class="car-info">
+          <div class="car-meta"><span class="car-year">2023</span><span class="car-type">Electric</span></div>
+          <h3 class="car-name">Tesla Model 3 LR</h3>
+          <p class="car-desc">560km range · Full Self-Driving · Over-the-air updates · White premium interior.</p>
+          <div class="car-specs-row"><span class="spec-tag">Dual Motor</span><span class="spec-tag">AWD</span><span class="spec-tag">14,200km</span></div>
+          <div class="car-footer">
+            <div class="car-price">Rs. 22,000,000</div>
+            <div class="car-actions-row">
+              <button class="btn-card-ghost" onclick="openCarModal(this.closest('.car-card'))">View Details</button>
+              <button class="btn-card-primary" onclick="openPaymentModal(this.closest('.car-card'))">Buy Now</button>
+            </div>
+          </div>
+        </div>
+      </article>
+      
+      
+
+      
+
+      
+
+      
+
+      
+    </div>
+    <div class="no-results" id="noResults" style="display:none;">
+      <div class="no-results-icon">🔍</div>
+      <h3>No vehicles in this category right now.</h3>
+      <p>Check back soon or <a href="contact.html">contact us</a> to request a specific model.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLD CARS SECTION -->
+<section class="section sold-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">Already Gone</div>
+      <h2 class="section-title">Recently <span class="text-silver">Sold</span></h2>
+      <p class="section-sub">These beauties found their owners. Never miss out again — get notified when similar cars arrive.</p>
+    </div>
+    <div class="cars-grid cars-grid-full">
+
+      <!-- Sold 1: Mercedes C200 AMG -->
+      <article class="car-card reveal" style="pointer-events:none; opacity:0.85;">
+        <div class="car-img-box" style="position:relative; overflow:hidden;">
+          <img src="images/sold_1.jpeg"
+               alt="Mercedes C200 AMG"
+               style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(40%) brightness(0.75);" loading="lazy"/>
+          <div class="sold-overlay-stamp"><div class="sold-stamp">SOLD</div></div>
+        </div>
+        <div class="car-info">
+          <div class="car-meta"><span class="car-year">2022</span><span class="car-type">Sedan</span></div>
+          <h3 class="car-name sold-card-name">Mercedes C200 AMG</h3>
+          <p class="car-desc">AMG Pack · Burmester · Pano roof. Sold in 3 days.</p>
+          <div class="car-specs-row"><span class="spec-tag">2.0T</span><span class="spec-tag">Auto</span><span class="spec-tag">31,000km</span></div>
+          <div class="car-footer">
+            <div class="car-price sold-card-price">Rs. 16,200,000</div>
+            <div class="sold-date">✓ Sold — January 2025</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Sold 2: Range Rover Velar -->
+      <article class="car-card reveal" style="pointer-events:none; opacity:0.85;">
+        <div class="car-img-box" style="position:relative; overflow:hidden;">
+          <img src="images/sold_2.jpeg"
+               alt="Range Rover Velar R"
+               style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(40%) brightness(0.75);" loading="lazy"/>
+          <div class="sold-overlay-stamp"><div class="sold-stamp">SOLD</div></div>
+        </div>
+        <div class="car-info">
+          <div class="car-meta"><span class="car-year">2023</span><span class="car-type">SUV</span></div>
+          <h3 class="car-name sold-card-name">Range Rover Velar R</h3>
+          <p class="car-desc">P400 · Air suspension · Meridian audio. Immaculate.</p>
+          <div class="car-specs-row"><span class="spec-tag">3.0T</span><span class="spec-tag">AWD</span><span class="spec-tag">12,400km</span></div>
+          <div class="car-footer">
+            <div class="car-price sold-card-price">Rs. 33,500,000</div>
+            <div class="sold-date">✓ Sold — February 2025</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Sold 3: Tesla Model Y -->
+      <article class="car-card reveal" style="pointer-events:none; opacity:0.85;">
+        <div class="car-img-box" style="position:relative; overflow:hidden;">
+          <img src="images/peugo_3.jpeg"
+               alt="Tesla Model Y LR"
+               style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(40%) brightness(0.75);" loading="lazy"/>
+          <div class="sold-overlay-stamp"><div class="sold-stamp">SOLD</div></div>
+        </div>
+        <div class="car-info">
+          <div class="car-meta"><span class="car-year">2022</span><span class="car-type">Electric</span></div>
+          <h3 class="car-name sold-card-name">Tesla Model Y LR</h3>
+          <p class="car-desc">Dual Motor AWD · 533km range · 7-seat config.</p>
+          <div class="car-specs-row"><span class="spec-tag">Dual Motor</span><span class="spec-tag">AWD</span><span class="spec-tag">24,600km</span></div>
+          <div class="car-footer">
+            <div class="car-price sold-card-price">Rs. 24,000,000</div>
+            <div class="sold-date">✓ Sold — December 2024</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Sold 4: Porsche Cayman GTS -->
+      <article class="car-card reveal" style="pointer-events:none; opacity:0.85;">
+        <div class="car-img-box" style="position:relative; overflow:hidden;">
+          <img src="images/sold_4.jpeg"
+               alt="Porsche Cayman GTS"
+               style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(40%) brightness(0.75);" loading="lazy"/>
+          <div class="sold-overlay-stamp"><div class="sold-stamp">SOLD</div></div>
+        </div>
+        <div class="car-info">
+          <div class="car-meta"><span class="car-year">2022</span><span class="car-type">Coupe</span></div>
+          <h3 class="car-name sold-card-name">Porsche Cayman GTS</h3>
+          <p class="car-desc">4.0L NA · PDK · Sport Chrono · PASM. Zero compromise.</p>
+          <div class="car-specs-row"><span class="spec-tag">4.0L</span><span class="spec-tag">PDK</span><span class="spec-tag">19,800km</span></div>
+          <div class="car-footer">
+            <div class="car-price sold-card-price">Rs. 52,000,000</div>
+            <div class="sold-date">✓ Sold — November 2024</div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    <div style="text-align:center; margin-top:2.5rem;">
+      <a href="https://wa.me/94778901234?text=Hi%20Bro%20Cars!%20Please%20notify%20me%20when%20similar%20cars%20arrive." target="_blank" class="btn-primary">🔔 Notify Me When Similar Cars Arrive</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-bg-text">FIND</div>
+  <div class="container">
+    <div class="cta-inner reveal">
+      <h2 class="cta-title">Can't Find<br/><span>What You Need?</span></h2>
+      <p class="cta-sub">Tell us the exact spec and we'll source it from our verified network within 14 days.</p>
+      <div class="cta-btns">
+        <a href="https://wa.me/94778901234?text=Hi%20Bro%20Cars!%20I'm%20looking%20for%20a%20specific%20vehicle.%20Can%20you%20help%20source%20it?" target="_blank" class="btn-primary">Make an Enquiry via WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- CAR DETAIL MODAL -->
+<div class="car-modal-overlay" id="carModalOverlay" onclick="closeModalOnOverlay(event)">
+  <div class="car-modal" id="carModal">
+    <button class="modal-close" onclick="closeCarModal()">✕</button>
+    <!-- IMAGE SLIDER -->
+    <div style="position:relative;">
+      <div class="modal-slider" id="modalSlider">
+        <div class="slider-track" id="sliderTrack"></div>
+        <button class="slider-btn prev" id="sliderPrev" onclick="sliderMove(-1)">&#8592;</button>
+        <button class="slider-btn next" id="sliderNext" onclick="sliderMove(1)">&#8594;</button>
+        <div class="slider-dots" id="sliderDots"></div>
+        <div class="modal-badge-row">
+          <span class="modal-tag" id="modalBadge">Popular</span>
+          <span class="modal-tag green">Certified</span>
+          <span class="modal-tag blue">120-Point Inspected</span>
+        </div>
+      </div>
+      <div class="slider-thumbs" id="sliderThumbs"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-header-row">
+        <div>
+          <div class="modal-title" id="modalName">—</div>
+          <div class="modal-year-type" id="modalYearType">—</div>
+        </div>
+        <div class="modal-price-box">
+          <div class="modal-price" id="modalPrice">Rs. —</div>
+          <div class="modal-price-note">Negotiable · On-the-road price</div>
+        </div>
+      </div>
+      <div class="modal-specs-grid">
+        <div class="modal-spec"><div class="modal-spec-val" id="modalEngine">—</div><div class="modal-spec-label">Engine</div></div>
+        <div class="modal-spec"><div class="modal-spec-val" id="modalTrans">—</div><div class="modal-spec-label">Transmission</div></div>
+        <div class="modal-spec"><div class="modal-spec-val" id="modalMileage">—</div><div class="modal-spec-label">Mileage</div></div>
+        <div class="modal-spec"><div class="modal-spec-val">120 ✓</div><div class="modal-spec-label">Inspection Points</div></div>
+      </div>
+      <div class="modal-section-title">Key Features</div>
+      <div class="modal-features-list" id="modalFeatures"></div>
+      <div class="payment-section">
+        <div class="modal-section-title">Payment Options</div>
+        <div class="payment-tabs">
+          <button class="pay-tab active" onclick="switchPayTab('cash')">💵 Full Cash</button>
+          <button class="pay-tab" onclick="switchPayTab('lease')">🏦 Leasing</button>
+          <button class="pay-tab" onclick="switchPayTab('tradein')">🔄 Trade-In</button>
+        </div>
+        <!-- CASH -->
+        <div class="pay-panel active" id="panel-cash">
+          <div class="cash-summary">
+            <div class="cash-row"><span>Vehicle Price</span><span id="cashPrice">—</span></div>
+            <div class="cash-row"><span>Registration &amp; Documentation</span><span>Rs. 45,000</span></div>
+            <div class="cash-row"><span>Comprehensive Insurance (1 yr)</span><span>Rs. 120,000 est.</span></div>
+            <div class="cash-row"><span>Revenue License</span><span>Rs. 18,000</span></div>
+            <div class="cash-row"><span style="font-weight:800;">Total On-Road</span><span id="cashTotal">—</span></div>
+          </div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:0.75rem;">* Insurance and license are estimates. All transactions in LKR.</p>
+        </div>
+        <!-- LEASING -->
+        <div class="pay-panel" id="panel-lease">
+          <div class="leasing-calc">
+            <div class="lease-row">
+              <div class="lease-field"><label>Down Payment</label>
+                <select id="leaseDown" onchange="calcLease()">
+                  <option value="0.20">20%</option><option value="0.25" selected>25%</option>
+                  <option value="0.30">30%</option><option value="0.40">40%</option><option value="0.50">50%</option>
+                </select>
+              </div>
+              <div class="lease-field"><label>Tenure</label>
+                <select id="leaseTenure" onchange="calcLease()">
+                  <option value="36">36 months</option><option value="48">48 months</option>
+                  <option value="60" selected>60 months</option><option value="72">72 months</option><option value="84">84 months</option>
+                </select>
+              </div>
+            </div>
+            <div class="lease-row">
+              <div class="lease-field"><label>Interest Rate</label>
+                <select id="leaseRate" onchange="calcLease()">
+                  <option value="0.14">14% p.a.</option><option value="0.16" selected>16% p.a.</option>
+                  <option value="0.18">18% p.a.</option><option value="0.20">20% p.a.</option>
+                </select>
+              </div>
+              <div class="lease-field"><label>Down Payment Amount</label>
+                <input type="text" id="leaseDownAmt" readonly style="background:var(--pale);color:var(--mid);">
+              </div>
+            </div>
+            <div class="lease-result">
+              <div><div class="lease-result-label">Estimated Monthly Installment</div><div class="lease-result-label" id="leaseSummaryText"></div></div>
+              <div class="lease-result-amount" id="leaseMonthly">Rs. —</div>
+            </div>
+            <div style="margin-top:1rem;">
+              <div class="modal-section-title" style="font-size:0.85rem;margin-bottom:0.5rem;">Partner Banks</div>
+              <div class="lease-banks">
+                <span class="lease-bank-tag">Sampath Bank</span><span class="lease-bank-tag">Commercial Bank</span>
+                <span class="lease-bank-tag">HNB</span><span class="lease-bank-tag">People's Bank</span>
+                <span class="lease-bank-tag">BOC</span><span class="lease-bank-tag">Seylan Bank</span>
+                <span class="lease-bank-tag">LB Finance</span><span class="lease-bank-tag">LOLC Finance</span>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:0.75rem;">* Indicative only. Final rates subject to bank approval. Approval in 48 hours.</p>
+        </div>
+        <!-- TRADE-IN -->
+        <div class="pay-panel" id="panel-tradein">
+          <div class="tradein-info">
+            <div class="tradein-box">
+              <h4>🔄 How Trade-In Works</h4>
+              <div class="tradein-steps">
+                <div class="tradein-step"><div class="tradein-step-num">1</div><span>Bring your vehicle for a free valuation at our showroom</span></div>
+                <div class="tradein-step"><div class="tradein-step-num">2</div><span>Certified inspector assesses condition, mileage &amp; market value</span></div>
+                <div class="tradein-step"><div class="tradein-step-num">3</div><span>Fair offer in 30 minutes — no hidden deductions</span></div>
+                <div class="tradein-step"><div class="tradein-step-num">4</div><span>Trade-in value deducted directly from your new car price</span></div>
+              </div>
+            </div>
+            <div class="tradein-box">
+              <h4>💡 Trade-In Benefits</h4>
+              <p style="margin-bottom:0.75rem;">Offset your current car's value against your purchase and save on upfront costs.</p>
+              <p style="margin-bottom:0.75rem;"><strong>We accept:</strong> Any make, any model, any year.</p>
+              <p style="margin-bottom:0.75rem;"><strong>Same-day ownership transfer</strong> handled by our team.</p>
+              <p><strong>Typical savings:</strong> Rs. 1.5M – Rs. 8M+ depending on your vehicle.</p>
+            </div>
+          </div>
+          <div style="margin-top:1rem;padding:1rem;background:var(--pale);border:1.5px solid var(--light);">
+            <p style="font-size:0.88rem;color:var(--mid);">📞 <strong style="color:var(--black);">Book a Free Valuation:</strong> Call +94 11 234 5678 or WhatsApp us to schedule. Available 7 days a week.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-cta-row">
+        <a id="modalWaBtn" href="#" target="_blank" class="modal-cta-wa">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Enquire on WhatsApp
+        </a>
+        <a href="tel:+94112345678" class="modal-cta-book">📞 Call to Book Test Drive</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BUY NOW — PAYMENT MODAL ═══ -->
+<div class="pay-modal-overlay" id="payModalOverlay" onclick="closePayModalOnOverlay(event)">
+  <div class="pay-modal" id="payModal">
+    <button class="modal-close" onclick="closePaymentModal()" style="z-index:20;">✕</button>
+
+    <!-- Header Banner -->
+    <div class="pay-modal-header">
+      <div class="pay-modal-car-img" id="payModalImg"></div>
+      <div class="pay-modal-header-info">
+        <div class="pay-modal-badge" id="payModalBadge">Popular</div>
+        <div class="pay-modal-car-name" id="payModalName">—</div>
+        <div class="pay-modal-car-sub" id="payModalSub">—</div>
+        <div class="pay-modal-price-tag" id="payModalPrice">Rs. —</div>
+      </div>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="pay-steps-bar">
+      <div class="pay-step active" id="pstep1"><span class="pay-step-num">1</span><span class="pay-step-lbl">Payment Method</span></div>
+      <div class="pay-step-line"></div>
+      <div class="pay-step" id="pstep2"><span class="pay-step-num">2</span><span class="pay-step-lbl">Your Details</span></div>
+      <div class="pay-step-line"></div>
+      <div class="pay-step" id="pstep3"><span class="pay-step-num">3</span><span class="pay-step-lbl">Confirm & Pay</span></div>
+    </div>
+
+    <div class="pay-modal-body">
+
+      <!-- STEP 1: Payment Method -->
+      <div class="pay-step-panel active" id="ppanel1">
+        <div class="pay-method-title">Select Your Payment Method</div>
+        <div class="pay-method-grid">
+          <label class="pay-method-card selected" id="pm-full">
+            <input type="radio" name="paymethod" value="full" checked onchange="selectPayMethod('full')"/>
+            <div class="pm-icon">💵</div>
+            <div class="pm-label">Full Cash</div>
+            <div class="pm-desc">Pay the full amount upfront and get the best deal</div>
+            <div class="pm-check">✓</div>
+          </label>
+          <label class="pay-method-card" id="pm-lease">
+            <input type="radio" name="paymethod" value="lease" onchange="selectPayMethod('lease')"/>
+            <div class="pm-icon">🏦</div>
+            <div class="pm-label">Bank Leasing</div>
+            <div class="pm-desc">Spread payments over 12–60 months via partner banks</div>
+            <div class="pm-check">✓</div>
+          </label>
+          <label class="pay-method-card" id="pm-tradein">
+            <input type="radio" name="paymethod" value="tradein" onchange="selectPayMethod('tradein')"/>
+            <div class="pm-icon">🔄</div>
+            <div class="pm-label">Trade-In + Cash</div>
+            <div class="pm-desc">Exchange your current vehicle and pay the difference</div>
+            <div class="pm-check">✓</div>
+          </label>
+        </div>
+
+        <!-- Method Detail Panel: Full Cash -->
+        <div class="pm-detail active" id="pmd-full">
+          <div class="pay-breakdown">
+            <div class="pb-row"><span>Vehicle Price</span><span id="pb-vehicle">—</span></div>
+            <div class="pb-row"><span>Registration &amp; Documentation</span><span>Rs. 45,000</span></div>
+            <div class="pb-row"><span>Comprehensive Insurance (1 yr)</span><span>Rs. 120,000 est.</span></div>
+            <div class="pb-row"><span>Revenue License</span><span>Rs. 18,000</span></div>
+            <div class="pb-row pb-total"><span>Total On-Road</span><span id="pb-total">—</span></div>
+          </div>
+          <p class="pb-note">* Insurance and license are estimates. All transactions in LKR. Transfer of ownership completed within 3 working days.</p>
+        </div>
+
+        <!-- Method Detail Panel: Leasing -->
+        <div class="pm-detail" id="pmd-lease">
+          <div class="pay-lease-calc">
+            <div class="plc-row">
+              <div class="plc-field"><label>Down Payment</label>
+                <select id="pmLeaseDown" onchange="calcPayLease()">
+                  <option value="0.20">20%</option><option value="0.25" selected>25%</option>
+                  <option value="0.30">30%</option><option value="0.40">40%</option><option value="0.50">50%</option>
+                </select>
+              </div>
+              <div class="plc-field"><label>Tenure</label>
+                <select id="pmLeaseTenure" onchange="calcPayLease()">
+                  <option value="12">12 months</option><option value="24">24 months</option>
+                  <option value="36" selected>36 months</option><option value="48">48 months</option><option value="60">60 months</option>
+                </select>
+              </div>
+              <div class="plc-field"><label>Interest Rate</label>
+                <select id="pmLeaseRate" onchange="calcPayLease()">
+                  <option value="0.08">8% p.a.</option><option value="0.10" selected>10% p.a.</option>
+                  <option value="0.12">12% p.a.</option><option value="0.14">14% p.a.</option>
+                </select>
+              </div>
+            </div>
+            <div class="plc-result">
+              <div><div style="font-size:0.8rem;color:rgba(255,255,255,0.65);">Est. Monthly Installment</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.45);" id="pmLeaseSummary"></div></div>
+              <div style="font-family:var(--ff-display);font-size:1.9rem;font-weight:900;" id="pmLeaseMonthly">Rs. —</div>
+            </div>
+            <div class="plc-banks">
+              <span>Partner Banks:</span>
+              <span class="plc-bank">Sampath</span><span class="plc-bank">Commercial</span><span class="plc-bank">HNB</span>
+              <span class="plc-bank">BOC</span><span class="plc-bank">Seylan</span><span class="plc-bank">LOLC Finance</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Method Detail Panel: Trade-In -->
+        <div class="pm-detail" id="pmd-tradein">
+          <div class="pay-breakdown" style="margin-bottom:1rem;">
+            <div class="pb-row"><span>New Car Price</span><span id="pb-tradein-price">—</span></div>
+            <div class="pb-row"><span>Your Trade-In Value (est.)</span><span style="color:#27ae60;">- Rs. 0 (assessed on site)</span></div>
+            <div class="pb-row pb-total"><span>You Pay (after trade-in)</span><span id="pb-tradein-total">Subject to valuation</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <div style="background:var(--pale);border:1.5px solid var(--light);padding:1rem;">
+              <div style="font-weight:700;font-size:0.88rem;margin-bottom:0.5rem;">How It Works</div>
+              <div style="font-size:0.8rem;color:var(--mid);line-height:1.7;">1. Book appointment below<br/>2. Bring your vehicle for free valuation<br/>3. Fair offer in 30 mins<br/>4. Same-day ownership transfer</div>
+            </div>
+            <div style="background:var(--pale);border:1.5px solid var(--light);padding:1rem;">
+              <div style="font-weight:700;font-size:0.88rem;margin-bottom:0.5rem;">We Accept</div>
+              <div style="font-size:0.8rem;color:var(--mid);line-height:1.7;">Any make · Any model · Any year<br/>Typical savings: <strong style="color:var(--black);">Rs. 1.5M – Rs. 8M+</strong><br/>depending on your vehicle</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pay-step1-next">
+          <button class="pay-next-btn" onclick="payGoStep(2)">Continue to Your Details →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Customer Details -->
+      <div class="pay-step-panel" id="ppanel2">
+        <div class="pay-method-title">Your Contact Details</div>
+        <div class="pay-form-grid">
+          <div class="pay-form-field">
+            <label>Full Name *</label>
+            <input type="text" id="pf-name" placeholder="e.g. Kasun Perera" oninput="validatePayForm()"/>
+          </div>
+          <div class="pay-form-field">
+            <label>Phone Number *</label>
+            <input type="tel" id="pf-phone" placeholder="e.g. 077 123 4567" oninput="validatePayForm()"/>
+          </div>
+          <div class="pay-form-field" style="grid-column:1/-1;">
+            <label>Email Address *</label>
+            <input type="email" id="pf-email" placeholder="e.g. kasun@example.com" oninput="validatePayForm()"/>
+          </div>
+          <div class="pay-form-field" style="grid-column:1/-1;">
+            <label>NIC / Passport Number *</label>
+            <input type="text" id="pf-nic" placeholder="e.g. 912345678V" oninput="validatePayForm()"/>
+          </div>
+          <div class="pay-form-field" style="grid-column:1/-1;">
+            <label>Delivery Address</label>
+            <input type="text" id="pf-addr" placeholder="No. 12, Galle Rd, Colombo 03 (optional)"/>
+          </div>
+          <div class="pay-form-field" style="grid-column:1/-1;">
+            <label>Additional Notes</label>
+            <textarea id="pf-notes" rows="2" placeholder="Any special requests or questions..."></textarea>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+          <button class="pay-back-btn" onclick="payGoStep(1)">← Back</button>
+          <button class="pay-next-btn" id="payStep2Next" onclick="payGoStep(3)" disabled style="flex:1;">Review Order →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Confirmation -->
+      <div class="pay-step-panel" id="ppanel3">
+        <div class="pay-method-title">Review &amp; Confirm Your Order</div>
+        <div class="pay-confirm-card" id="payConfirmCard"></div>
+        <div class="pay-security-row">
+          <span>🔒 Secure Transaction</span>
+          <span>✅ 120-Point Certified</span>
+          <span>📋 Full Documentation</span>
+          <span>🏦 Bank Approved</span>
+        </div>
+        <div class="pay-final-btns">
+          <button class="pay-back-btn" onclick="payGoStep(2)">← Edit Details</button>
+          <button class="pay-confirm-btn" onclick="submitPayOrder()">
+            <span>Confirm Purchase &amp; Pay</span>
+            <span style="font-size:0.75rem;font-weight:400;display:block;opacity:0.75;">You'll be contacted within 2 hours to finalise</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ORDER SUCCESS OVERLAY ═══ -->
+<div class="pay-success-overlay" id="paySuccessOverlay">
+  <div class="pay-success-box">
+    <div class="pay-success-icon">🎉</div>
+    <h2 class="pay-success-title">Order Placed Successfully!</h2>
+    <p class="pay-success-sub" id="paySuccessMsg">Our team will contact you within 2 hours to confirm your purchase and guide you through the next steps.</p>
+    <div class="pay-success-ref" id="paySuccessRef">Order Ref: #BRC-000000</div>
+    <button class="pay-next-btn" style="width:100%;margin-top:1.5rem;" onclick="closeSuccess()">Done</button>
+  </div>
+</div>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/94778901234" class="whatsapp-float" target="_blank" title="Chat with us on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+<script>
+  let currentPrice = 0;
+  let sliderIndex = 0;
+  let sliderSlides = [];
+
+  // Real car image sets per car name (Unsplash/Picsum real car photos)
+  const CAR_IMAGE_SETS = {
+    'Mercedes E300':       ['images/peugo_1.jpeg','images/peugo_2.jpeg','images/peugo_3.jpeg','images/peugo_4.jpeg','images/peugo_5.jpeg'],
+    'Toyota Land Cruiser': ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=900&q=80','https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=900&q=80','https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=900&q=80','https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80','https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=900&q=80'],
+    'BMW 5 Series':        ['https://images.unsplash.com/photo-1555215695-3004980ad54e?w=900&q=80','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=900&q=80','https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80','https://images.unsplash.com/photo-1502877338535-766e1452684a?w=900&q=80','https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=900&q=80'],
+    'Tesla Model 3':       ['https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=900&q=80','https://images.unsplash.com/photo-1561580125-028ee3bd62eb?w=900&q=80','https://images.unsplash.com/photo-1571987502227-9231b837d92a?w=900&q=80','https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=900&q=80','https://images.unsplash.com/photo-1554744512-d6c603f27c54?w=900&q=80'],
+    'Audi A5 Sportback':   ['https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=900&q=80','https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80','https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=900&q=80','https://images.unsplash.com/photo-1547038577-da80abbc4f19?w=900&q=80','https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80'],
+    'VW Golf GTI Mk8':     ['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=900&q=80','https://images.unsplash.com/photo-1546614042-7df3c24c9e5d?w=900&q=80','https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=900&q=80','https://images.unsplash.com/photo-1526726538690-5cbf956ae2fd?w=900&q=80','https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&q=80'],
+    'Lexus ES 300h':       ['https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=900&q=80','https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=900&q=80','https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=900&q=80','https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=900&q=80','https://images.unsplash.com/photo-1611859266238-4b98091d9d9b?w=900&q=80'],
+    'BMW M4 Competition':  ['https://images.unsplash.com/photo-1555215695-3004980ad54e?w=900&q=80','https://images.unsplash.com/photo-1607853827280-a2e5e0591b6a?w=900&q=80','https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80','https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80','https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=900&q=80'],
+  };
+
+  const SLIDE_LABELS = ['Front View','Rear View','Side Profile','side view','Back View'];
+
+  function buildSlides(emoji, type, name) {
+    const imgs = CAR_IMAGE_SETS[name] || [
+      'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=900&q=80',
+      'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=900&q=80',
+      'https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80',
+      'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80',
+      'https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=900&q=80',
+    ];
+    return imgs.map((url, i) => ({ label: SLIDE_LABELS[i] || ('View '+(i+1)), img: url }));
+  }
+
+  function renderSlider(slides) {
+    sliderSlides = slides;
+    sliderIndex = 0;
+
+    // Track
+    const track = document.getElementById('sliderTrack');
+    track.innerHTML = slides.map((s, i) => `
+      <div class="slider-slide${i === 0 ? ' active' : ''}">
+        <img src="${s.img}" alt="${s.label}" style="width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0;" loading="lazy"/>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:0.5rem 1rem;background:linear-gradient(transparent,rgba(0,0,0,0.65));z-index:3;">
+          <span class="slider-angle-label" style="background:none;border:none;padding:0;">${s.label}</span>
+        </div>
+      </div>
+    `).join('');
+
+    // Dots
+    const dots = document.getElementById('sliderDots');
+    dots.innerHTML = slides.map((_, i) =>
+      `<button class="slider-dot${i === 0 ? ' active' : ''}" onclick="sliderGoTo(${i})"></button>`
+    ).join('');
+
+    // Thumbs
+    const thumbs = document.getElementById('sliderThumbs');
+    thumbs.innerHTML = slides.map((s, i) => `
+      <button class="slider-thumb${i === 0 ? ' active' : ''}" onclick="sliderGoTo(${i})" style="overflow:hidden;padding:0;height:64px;position:relative;">
+        <img src="${s.img}" alt="${s.label}" style="width:100%;height:100%;object-fit:cover;display:block;opacity:${i===0?'1':'0.6'};transition:opacity 0.2s;" />
+        <span style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.55);font-family:var(--ff-display);font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-align:center;padding:0.2rem 0;">${s.label}</span>
+      </button>
+    `).join('');
+
+    updateSliderUI();
+  }
+
+  function sliderGoTo(idx) {
+    sliderIndex = Math.max(0, Math.min(idx, sliderSlides.length - 1));
+    updateSliderUI();
+  }
+
+  function sliderMove(dir) {
+    sliderIndex = (sliderIndex + dir + sliderSlides.length) % sliderSlides.length;
+    updateSliderUI();
+  }
+
+  function updateSliderUI() {
+    document.getElementById('sliderTrack').style.transform = `translateX(-${sliderIndex * 100}%)`;
+    document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === sliderIndex));
+    document.querySelectorAll('.slider-thumb').forEach((t, i) => {
+      t.classList.toggle('active', i === sliderIndex);
+      const img = t.querySelector('img');
+      if (img) img.style.opacity = (i === sliderIndex) ? '1' : '0.6';
+    });
+    document.querySelectorAll('.slider-slide').forEach((s, i) => s.classList.toggle('active', i === sliderIndex));
+  }
+
+  // Touch/swipe support
+  let touchStartX = 0;
+  document.getElementById('carModalOverlay').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  document.getElementById('carModalOverlay').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 40) sliderMove(dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+  function openCarModal(card) {
+    const d = card.dataset;
+    currentPrice = parseInt(d.price);
+    document.getElementById('modalName').textContent = d.name;
+    document.getElementById('modalYearType').textContent = d.year + ' · ' + d.type + ' · ' + d.color;
+    document.getElementById('modalPrice').textContent = 'Rs. ' + currentPrice.toLocaleString();
+    document.getElementById('modalEngine').textContent = d.engine;
+    document.getElementById('modalTrans').textContent = d.trans;
+    document.getElementById('modalMileage').textContent = d.mileage;
+    const badge = document.getElementById('modalBadge');
+    badge.textContent = d.badge;
+    badge.className = 'modal-tag';
+    document.getElementById('modalFeatures').innerHTML = d.features.split(',').map(f => '<div class="modal-feature-item">' + f.trim() + '</div>').join('');
+    document.getElementById('cashPrice').textContent = 'Rs. ' + currentPrice.toLocaleString();
+    document.getElementById('cashTotal').textContent = 'Rs. ' + (currentPrice + 183000).toLocaleString();
+    const waMsg = encodeURIComponent('Hi Bro Cars! I\'m interested in the ' + d.year + ' ' + d.name + ' (Rs. ' + currentPrice.toLocaleString() + '). Please let me know availability.');
+    document.getElementById('modalWaBtn').href = 'https://wa.me/94778901234?text=' + waMsg;
+    calcLease();
+
+    // Build slider
+    renderSlider(buildSlides(d.emoji, d.type, d.name));
+
+    // Reset tabs
+    document.querySelectorAll('.pay-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+    document.querySelectorAll('.pay-panel').forEach((p,i) => p.classList.toggle('active', i===0));
+    document.getElementById('carModalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCarModal() {
+    document.getElementById('carModalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOnOverlay(e) {
+    if (e.target === document.getElementById('carModalOverlay')) closeCarModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCarModal(); });
+
+  function switchPayTab(name) {
+    const names = ['cash','lease','tradein'];
+    document.querySelectorAll('.pay-tab').forEach((t,i) => t.classList.toggle('active', names[i]===name));
+    document.querySelectorAll('.pay-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-'+name));
+  }
+
+  function calcLease() {
+    const down = parseFloat(document.getElementById('leaseDown').value);
+    const tenure = parseInt(document.getElementById('leaseTenure').value);
+    const rate = parseFloat(document.getElementById('leaseRate').value);
+    const downAmt = currentPrice * down;
+    const principal = currentPrice - downAmt;
+    const mr = rate / 12;
+    const monthly = principal * (mr * Math.pow(1+mr,tenure)) / (Math.pow(1+mr,tenure)-1);
+    document.getElementById('leaseDownAmt').value = 'Rs. ' + Math.round(downAmt).toLocaleString();
+    document.getElementById('leaseMonthly').textContent = 'Rs. ' + Math.round(monthly).toLocaleString();
+    document.getElementById('leaseSummaryText').textContent = tenure + ' months · ' + (rate*100).toFixed(0) + '% p.a. · ' + (down*100).toFixed(0) + '% down';
+  }
+
+  // ═══════════════════════════════
+  // BUY NOW — PAYMENT MODAL
+  // ═══════════════════════════════
+  let payCurrentCard = null;
+  let payCurrentStep = 1;
+  let paySelectedMethod = 'full';
+
+  // Car thumbnail map (same images used on cards)
+  const CARD_THUMB = {
+    'Mercedes E300':       'peugo_1.jpeg',
+    'BMW X5 M Sport':      'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&q=80',
+    'Tesla Model 3 LR':    'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400&q=80',
+    'Land Cruiser 300':    'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&q=80',
+    'Audi A5 Sportback':   'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=400&q=80',
+    'VW Golf GTI Mk8':     'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&q=80',
+    'Lexus ES 300h':       'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&q=80',
+    'BMW M4 Competition':  'https://images.unsplash.com/photo-1607853827280-a2e5e0591b6a?w=400&q=80',
+  };
+
+  function openPaymentModal(card) {
+    payCurrentCard = card;
+    paySelectedMethod = 'full';
+    payCurrentStep = 1;
+    const d = card.dataset;
+    const price = parseInt(d.price);
+
+    // Populate header
+    document.getElementById('payModalBadge').textContent = d.badge;
+    document.getElementById('payModalName').textContent = d.name;
+    document.getElementById('payModalSub').textContent = d.year + ' · ' + d.type + ' · ' + d.color;
+    document.getElementById('payModalPrice').textContent = 'Rs. ' + price.toLocaleString();
+    const thumb = CARD_THUMB[d.name] || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&q=80';
+    document.getElementById('payModalImg').style.backgroundImage = 'url(' + thumb + ')';
+
+    // Populate breakdown
+    document.getElementById('pb-vehicle').textContent = 'Rs. ' + price.toLocaleString();
+    document.getElementById('pb-total').textContent = 'Rs. ' + (price + 183000).toLocaleString();
+    document.getElementById('pb-tradein-price').textContent = 'Rs. ' + price.toLocaleString();
+
+    // Reset method selection
+    selectPayMethod('full');
+    document.querySelectorAll('[name="paymethod"]')[0].checked = true;
+
+    // Reset steps
+    payGoStep(1, true);
+
+    // Clear form
+    ['pf-name','pf-phone','pf-email','pf-nic','pf-addr','pf-notes'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('payStep2Next').disabled = true;
+
+    calcPayLease();
+    document.getElementById('payModalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePaymentModal() {
+    document.getElementById('payModalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function closePayModalOnOverlay(e) {
+    if (e.target === document.getElementById('payModalOverlay')) closePaymentModal();
+  }
+
+  function selectPayMethod(method) {
+    paySelectedMethod = method;
+    ['full','lease','tradein'].forEach(m => {
+      document.getElementById('pm-' + m).classList.toggle('selected', m === method);
+      document.getElementById('pmd-' + m).classList.toggle('active', m === method);
+    });
+  }
+
+  function calcPayLease() {
+    if (!payCurrentCard) return;
+    const price = parseInt(payCurrentCard.dataset.price);
+    const down = parseFloat(document.getElementById('pmLeaseDown').value);
+    const tenure = parseInt(document.getElementById('pmLeaseTenure').value);
+    const rate = parseFloat(document.getElementById('pmLeaseRate').value);
+    const downAmt = price * down;
+    const principal = price - downAmt;
+    const mr = rate / 12;
+    const monthly = principal * (mr * Math.pow(1+mr,tenure)) / (Math.pow(1+mr,tenure)-1);
+    document.getElementById('pmLeaseMonthly').textContent = 'Rs. ' + Math.round(monthly).toLocaleString();
+    document.getElementById('pmLeaseSummary').textContent = tenure + ' months · ' + (rate*100).toFixed(0) + '% p.a. · ' + (down*100).toFixed(0) + '% down';
+  }
+
+  function validatePayForm() {
+    const name = document.getElementById('pf-name').value.trim();
+    const phone = document.getElementById('pf-phone').value.trim();
+    const email = document.getElementById('pf-email').value.trim();
+    const nic = document.getElementById('pf-nic').value.trim();
+    const ok = name.length > 1 && phone.length > 6 && email.includes('@') && nic.length > 4;
+    document.getElementById('payStep2Next').disabled = !ok;
+  }
+
+  function payGoStep(step, silent) {
+    payCurrentStep = step;
+    [1,2,3].forEach(i => {
+      document.getElementById('ppanel' + i).classList.toggle('active', i === step);
+      const el = document.getElementById('pstep' + i);
+      el.classList.toggle('active', i === step);
+      el.classList.toggle('done', i < step);
+    });
+    if (step === 3 && !silent) buildConfirmSummary();
+    if (!silent) document.getElementById('payModal').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function buildConfirmSummary() {
+    if (!payCurrentCard) return;
+    const d = payCurrentCard.dataset;
+    const price = parseInt(d.price);
+    const name = document.getElementById('pf-name').value;
+    const phone = document.getElementById('pf-phone').value;
+    const email = document.getElementById('pf-email').value;
+    const nic = document.getElementById('pf-nic').value;
+    const addr = document.getElementById('pf-addr').value || 'Not specified';
+    const methodLabels = { full:'Full Cash Payment', lease:'Bank Leasing Finance', tradein:'Trade-In + Cash' };
+
+    let priceDisplay = '';
+    if (paySelectedMethod === 'lease') {
+      priceDisplay = document.getElementById('pmLeaseMonthly').textContent + '/month (' + document.getElementById('pmLeaseSummary').textContent + ')';
+    } else {
+      priceDisplay = 'Rs. ' + (price + 183000).toLocaleString() + ' (on-road total)';
+    }
+
+    document.getElementById('payConfirmCard').innerHTML = `
+      <div class="pay-confirm-row"><span>Vehicle</span><strong>${d.year} ${d.name} · ${d.color}</strong></div>
+      <div class="pay-confirm-row"><span>Payment Method</span><strong>${methodLabels[paySelectedMethod]}</strong></div>
+      <div class="pay-confirm-row"><span>Amount</span><strong>${priceDisplay}</strong></div>
+      <div class="pay-confirm-row"><span>Full Name</span><strong>${name}</strong></div>
+      <div class="pay-confirm-row"><span>Phone</span><strong>${phone}</strong></div>
+      <div class="pay-confirm-row"><span>Email</span><strong>${email}</strong></div>
+      <div class="pay-confirm-row"><span>NIC / Passport</span><strong>${nic}</strong></div>
+      <div class="pay-confirm-row"><span>Delivery Address</span><strong>${addr}</strong></div>
+    `;
+  }
+
+  function submitPayOrder() {
+    if (!payCurrentCard) return;
+    const d = payCurrentCard.dataset;
+    const ref = 'BRC-' + Date.now().toString().slice(-6);
+    const name = document.getElementById('pf-name').value;
+    document.getElementById('paySuccessMsg').textContent =
+      'Thank you, ' + name + '! Our team will contact you within 2 hours to confirm your ' + d.name + ' purchase and guide you through the next steps.';
+    document.getElementById('paySuccessRef').textContent = 'Order Ref: #' + ref;
+    closePaymentModal();
+    document.getElementById('paySuccessOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSuccess() {
+    document.getElementById('paySuccessOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closePaymentModal();
+      closeSuccess();
+    }
+  });
+</script>
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+  <img src="logo.png" alt="Bro Cars" class="logo-img footer-logo">
+  <span class="logo-text">BRO<span class="logo-accent">CARS</span></span>
+</a>
+          <p>Sri Lanka's most trusted premium car dealership. Serving drivers across the island since 2024.</p>
+          
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="cars.html">Our Vehicles</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="services.html">Vehicle Sales</a></li>
+            <li><a href="services.html">Leasing</a></li>
+            <li><a href="services.html">Trade-In</a></li>
+            <li><a href="services.html">Financing</a></li>
+            <li><a href="services.html">Inspection</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-contact-col">
+          <h4>Get In Touch</h4>
+          <div class="footer-contact-item">
+            <span class="fc-icon">📍</span>
+            <span>No. 45, Duplication Rd,<br/>Colombo 03, Sri Lanka</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="fc-icon">📞</span>
+            <span>+94 11 234 5678</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="fc-icon">✉️</span>
+            <span>info@brocars.lk</span>
+          </div>
+          <div class="footer-contact-item">
+            <span class="fc-icon">🕐</span>
+            <span>Mon–Fri 8:30am–6pm<br/>Sat 9am–4pm</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <span>© 2025 Bro Cars (Pvt) Ltd. All rights reserved.</span>
+      <span>Crafted for speed &amp; precision.</span>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/94778901234" class="whatsapp-float" target="_blank" title="Chat with us on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+<script src="script.js"></script>
+
+</body>
+</html>
