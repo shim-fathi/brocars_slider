@@ -534,7 +534,7 @@
       <!-- Sold 3: Tesla Model Y -->
       <article class="car-card reveal" style="pointer-events:none; opacity:0.85;">
         <div class="car-img-box" style="position:relative; overflow:hidden;">
-          <img src="images/peugo_3.jpeg"
+          <img src="images/sold_3.jpeg"
                alt="Tesla Model Y LR"
                style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(40%) brightness(0.75);" loading="lazy"/>
           <div class="sold-overlay-stamp"><div class="sold-stamp">SOLD</div></div>
@@ -936,12 +936,12 @@
 
   // Real car image sets per car name (Unsplash/Picsum real car photos)
   const CAR_IMAGE_SETS = {
-    'Mercedes E300':       ['images/peugo_1.jpeg','images/peugo_2.jpeg','images/peugo_3.jpeg','images/peugo_4.jpeg','images/peugo_5.jpeg'],
+    'Peugeot 2008':       ['images/peugo_1.jpeg','images/peugo_2.jpeg','images/peugo_3.jpeg','images/peugo_4.jpeg','images/peugo_5.jpeg'],
     'Toyota Land Cruiser': ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=900&q=80','https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=900&q=80','https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=900&q=80','https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80','https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=900&q=80'],
     'BMW 5 Series':        ['https://images.unsplash.com/photo-1555215695-3004980ad54e?w=900&q=80','https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=900&q=80','https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80','https://images.unsplash.com/photo-1502877338535-766e1452684a?w=900&q=80','https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=900&q=80'],
-    'Tesla Model 3':       ['https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=900&q=80','https://images.unsplash.com/photo-1561580125-028ee3bd62eb?w=900&q=80','https://images.unsplash.com/photo-1571987502227-9231b837d92a?w=900&q=80','https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=900&q=80','https://images.unsplash.com/photo-1554744512-d6c603f27c54?w=900&q=80'],
-    'Audi A5 Sportback':   ['https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=900&q=80','https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80','https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=900&q=80','https://images.unsplash.com/photo-1547038577-da80abbc4f19?w=900&q=80','https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80'],
-    'VW Golf GTI Mk8':     ['https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=900&q=80','https://images.unsplash.com/photo-1546614042-7df3c24c9e5d?w=900&q=80','https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=900&q=80','https://images.unsplash.com/photo-1526726538690-5cbf956ae2fd?w=900&q=80','https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=900&q=80'],
+    'Tesla Model 3':       ['https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=900&q=8₀','https://images.unsplash.com/photo-156158₀₁₂₅-₀₂₈ee₃bd62eb?w=9₀₀&q=8₀','https://images.unsplash.com/photo-₁₅₇₁₉₈₇₅₀₂₂₂₇-９₂₃₁b₈₃₇d９２a?w=９₀₀&q=８₀','https://images.unsplash.com/photo-₁₅４９₃₉₉₅₄₂-７e₃f８b７９c３４₁?w=９₀₀&q=８₀','https://images.unsplash.com/photo-₁₅５４７４４５₁₂-d６c６₀³f²⁷c⁵⁴?w=９₀₀&q=８₀'],
+    'Audi A５ Sportback':   ['https://images.unsplash.com/photo-₁₆₀⁶²²⁰⁵⁸⁸⁹¹³-b³aacb⁴d²f⁴⁶?w=９₀₀&q=８₀','https://images.unsplash.com/photo-₁₅⁴²³⁶²⁵⁶⁷-b⁰⁷e⁵⁴³⁵⁸７⁵³?w=９₀₀&q=８₀','https://images.unsplash.com/photo-₁₅⁶⁸⁶⁰⁵¹¹⁷０³６-５fe５e７bab０b７?w=９₀₀&q=８₀','https://images.unsplash.com/photo-₁₅⁴⁷０³８５７７-da八十abbc４f¹９?w=９₀₀&q=８₀','https://images.unsplash.com/photo-₁₅０³³７６７８０³៥³-７e６６９²７６７b７０?w=９₀₀&q=８₀'],
+    'VW Golf GTI Mk八年':     ['https://images.unsplash.com/photo-₁₅八七三零零零零³³八八-５九二零八cc玖六²cb?w=９００;q=８０','https://images.unsqueeze/com.photo-₁₅四六六¹四零四²-７df叁c²肆c玖e伍d?w=９００;q=８０','https://images.unsqueeze/com.photo-₁₅一九六四一四七¹六伍四-sevencezeroonezerosevenad¹b?w = 九百;q = 八十 ',' https : // images . unsplash . com / photo - 一五零二八七七三叁八伍叁五 - 七e六六玖贰柒陆柒b柒零 ? w = 九百 ; q = 八十 ',' https : // images . unsplash . com / photo - 一五四五七四四伍壹二 - d六c陆零叁f²七c伍肆 ? w = 九百 ; q = 八十 '],
     'Lexus ES 300h':       ['https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=900&q=80','https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=900&q=80','https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=900&q=80','https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=900&q=80','https://images.unsplash.com/photo-1611859266238-4b98091d9d9b?w=900&q=80'],
     'BMW M4 Competition':  ['https://images.unsplash.com/photo-1555215695-3004980ad54e?w=900&q=80','https://images.unsplash.com/photo-1607853827280-a2e5e0591b6a?w=900&q=80','https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80','https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80','https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=900&q=80'],
   };
@@ -950,11 +950,11 @@
 
   function buildSlides(emoji, type, name) {
     const imgs = CAR_IMAGE_SETS[name] || [
-      'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=900&q=80',
-      'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=900&q=80',
-      'https://images.unsplash.com/photo-1542362567-b07e54358753?w=900&q=80',
-      'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=900&q=80',
-      'https://images.unsplash.com/photo-1471444928139-48c5bf5173f8?w=900&q=80',
+      'images/peugeot_2.jpeg',
+      'images/peugeot_3.jpeg',
+      'images/peugeot_4.jpeg',
+      'images/peugeot_5.jpeg',
+      'images/peugeot_6.jpeg',
     ];
     return imgs.map((url, i) => ({ label: SLIDE_LABELS[i] || ('View '+(i+1)), img: url }));
   }
@@ -1089,7 +1089,7 @@
 
   // Car thumbnail map (same images used on cards)
   const CARD_THUMB = {
-    'Mercedes E300':       'peugo_1.jpeg',
+    'Peugeot 2008':       'images/peugo_1.jpeg',
     'BMW X5 M Sport':      'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&q=80',
     'Tesla Model 3 LR':    'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400&q=80',
     'Land Cruiser 300':    'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&q=80',
