@@ -383,9 +383,12 @@
 </section>
 
 
-
+<!--available car-->
 <section class="section" style="padding-top:3rem;">
   <div class="container">
+    <div class="section-header"><div class="section-tag">Now On Stock</div>
+      <h2 class="section-title">Our Available <span class="text-silver">Vehicles</span></h2>
+      <p class="section-sub">These beauties found their owners. Never miss out again — get notified when similar cars arrive.</p></div>
     <div class="cars-grid cars-grid-full" id="carsGrid">
 
       <article class="car-card reveal" data-category="suv"
@@ -413,55 +416,80 @@
         </div>
       </article>
 
-      <article class="car-card reveal" data-category="suv"
-        data-name="BMW X5 M Sport" data-year="2024" data-type="SUV" data-emoji="🚙" data-price="29000000"
-        data-badge="New" data-badge-class="new-badge" data-engine="3.0T Twin Turbo" data-trans="8-Speed Auto"
-        data-mileage="9,800 km" data-color="Alpine White"
-        data-features="xDrive AWD,Panoramic Glass Roof,Harman Kardon Sound,360° Cameras,Apple CarPlay &amp; Android Auto,Heated &amp; Massaging Seats,Adaptive Cruise Control,Live Cockpit Pro,Ambient Lighting,Power Tailgate,Head-Up Display,Parking Assistant Plus">
-        <div class="car-img-box" style="overflow:hidden;">
-          <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=700&q=80" alt="BMW X5 M Sport" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
-          <div class="car-overlay"><button class="btn-overlay" onclick="openCarModal(this.closest('.car-card'))">View Details</button></div>
-          <div class="car-badge new-badge">COMING SOON</div>
-        </div>
-        <div class="car-info">
-          <div class="car-meta"><span class="car-year">2024</span><span class="car-type">SUV</span></div>
-          <h3 class="car-name">BMW X5 M Sport</h3>
-          <p class="car-desc">xDrive AWD · Panoramic roof · Harman Kardon · 360° cameras · Apple CarPlay.</p>
-          <div class="car-specs-row"><span class="spec-tag">3.0T</span><span class="spec-tag">AWD</span><span class="spec-tag">9,800km</span></div>
-          <div class="car-footer">
-            <div class="car-price">Rs. 29,000,000</div>
-            <div class="car-actions-row">
-              <button class="btn-card-ghost" onclick="openCarModal(this.closest('.car-card'))">View Details</button>
-              <button class="btn-card-primary" onclick="openPaymentModal(this.closest('.car-card'))">Buy Now</button>
-            </div>
-          </div>
-        </div>
-      </article>
+<!--coming soon car-->
+<article class="car-card reveal coming-soon" data-category="suv">
+  <div class="car-img-box" style="overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=700&q=80"
+         alt="BMW X5 M Sport"
+         style="width:100%;height:100%;object-fit:cover;display:block;">
 
-      <article class="car-card reveal" data-category="electric"
-        data-name="Tesla Model 3 LR" data-year="2023" data-type="Electric" data-emoji="⚡" data-price="22000000"
-        data-badge="EV" data-badge-class="eco-badge" data-engine="Dual Motor Electric" data-trans="Single-Speed Auto"
-        data-mileage="14,200 km" data-color="Pearl White"
-        data-features="560km Full Charge Range,Full Self-Driving Package,Over-the-Air Updates,White Premium Interior,Glass Roof,15-inch Touchscreen,Autopilot,Wireless Charging,Sentry Mode,Dog Mode,Premium Audio,Fast Charging Support">
-        <div class="car-img-box" style="overflow:hidden;">
-          <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=700&q=80" alt="Tesla Model 3 LR" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
-          <div class="car-overlay"><button class="btn-overlay" onclick="openCarModal(this.closest('.car-card'))">View Details</button></div>
-          <div class="car-badge eco-badge">COMING SOON</div>
-        </div>
-        <div class="car-info">
-          <div class="car-meta"><span class="car-year">2023</span><span class="car-type">Electric</span></div>
-          <h3 class="car-name">Tesla Model 3 LR</h3>
-          <p class="car-desc">560km range · Full Self-Driving · Over-the-air updates · White premium interior.</p>
-          <div class="car-specs-row"><span class="spec-tag">Dual Motor</span><span class="spec-tag">AWD</span><span class="spec-tag">14,200km</span></div>
-          <div class="car-footer">
-            <div class="car-price">Rs. 22,000,000</div>
-            <div class="car-actions-row">
-              <button class="btn-card-ghost" onclick="openCarModal(this.closest('.car-card'))">View Details</button>
-              <button class="btn-card-primary" onclick="openPaymentModal(this.closest('.car-card'))">Buy Now</button>
-            </div>
-          </div>
-        </div>
-      </article>
+<div class="car-badge new-badge">COMING SOON</div>
+  </div>
+
+  <div class="car-info">
+    <div class="car-meta">
+      <span class="car-year">2024</span>
+      <span class="car-type">SUV</span>
+    </div>
+<h3 class="car-name">BMW X5 M Sport</h3>
+<p class="car-desc">
+  xDrive AWD · Panoramic roof · Harman Kardon · 360° cameras · Apple CarPlay.
+</p>
+
+<div class="car-specs-row">
+  <span class="spec-tag">3.0T</span>
+  <span class="spec-tag">AWD</span>
+  <span class="spec-tag">9,800km</span>
+</div>
+
+<div class="car-footer">
+  <div class="car-price">Rs. 29,000,000</div>
+
+  <div class="coming-text">
+    <span class="coming-label">Vehicle arriving soon</span>
+  </div>
+</div>
+  </div>
+</article>
+
+<!--coming soon car-->
+<article class="car-card reveal coming-soon" data-category="suv">
+  <div class="car-img-box" style="overflow:hidden;">
+    <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=700&q=80"
+         alt="Tesla Model 3 LR"
+         style="width:100%;height:100%;object-fit:cover;display:block;">
+
+<div class="car-badge new-badge">COMING SOON</div>
+  </div>
+
+  <div class="car-info">
+    <div class="car-meta">
+      <span class="car-year">2023</span>
+      <span class="car-type">Electric</span>
+    </div>
+<h3 class="car-name">Tesla Model 3 LR</h3>
+<p class="car-desc">
+  560km range · Full Self-Driving · Over-the-air updates · White premium interior.
+</p>
+
+<div class="car-specs-row">
+  <span class="spec-tag">Dual Motor</span>
+  <span class="spec-tag">AWD</span>
+  <span class="spec-tag">9,800km</span>
+</div>
+
+<div class="car-footer">
+  <div class="car-price">14,200km</div>
+  <div class="coming-text">
+    <span class="coming-label">Vehicle arriving soon</span>
+  </div>
+</div>
+  </div>
+</article>
+
+
+
+      
       
       
 
@@ -495,17 +523,18 @@
       <article class="car-card reveal" style="pointer-events:none; opacity:0.85;">
         <div class="car-img-box" style="position:relative; overflow:hidden;">
           <img src="images/sold_1.jpeg"
-               alt="Mercedes C200 AMG"
+               alt="Mercedes-Benz A-Class"
                style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(40%) brightness(0.75);" loading="lazy"/>
           <div class="sold-overlay-stamp"><div class="sold-stamp">SOLD</div></div>
         </div>
         <div class="car-info">
-          <div class="car-meta"><span class="car-year">2022</span><span class="car-type">Sedan</span></div>
-          <h3 class="car-name sold-card-name">Mercedes C200 AMG</h3>
-          <p class="car-desc">AMG Pack · Burmester · Pano roof. Sold in 3 days.</p>
-          <div class="car-specs-row"><span class="spec-tag">2.0T</span><span class="spec-tag">Auto</span><span class="spec-tag">31,000km</span></div>
+          <div class="car-meta"><span class="car-year">2008</span><span class="car-type">Sedan</span></div>
+          <h3 class="car-name sold-card-name">Mercedes-Benz A-Class</h3>
+          <p class="car-desc">Compact luxury hatchback · Automatic transmission · Premium interior · Smooth city performance.</p>
+          <div class="car-specs-row"><span class="spec-tag">1.6L</span><span class="spec-tag">FWD</span><span class="spec-tag">82,000km</span></div>
           <div class="car-footer">
-            <div class="car-price sold-card-price">Rs. 16,200,000</div>
+            <div class="car-price sold-card-price">Rs. 6,500,000
+</div>
             <div class="sold-date">✓ Sold — January 2025</div>
           </div>
         </div>
@@ -515,17 +544,17 @@
       <article class="car-card reveal" style="pointer-events:none; opacity:0.85;">
         <div class="car-img-box" style="position:relative; overflow:hidden;">
           <img src="images/sold_2.jpeg"
-               alt="Range Rover Velar R"
+               alt="Range Rover Evoque"
                style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(40%) brightness(0.75);" loading="lazy"/>
           <div class="sold-overlay-stamp"><div class="sold-stamp">SOLD</div></div>
         </div>
         <div class="car-info">
-          <div class="car-meta"><span class="car-year">2023</span><span class="car-type">SUV</span></div>
-          <h3 class="car-name sold-card-name">Range Rover Velar R</h3>
-          <p class="car-desc">P400 · Air suspension · Meridian audio. Immaculate.</p>
-          <div class="car-specs-row"><span class="spec-tag">3.0T</span><span class="spec-tag">AWD</span><span class="spec-tag">12,400km</span></div>
+          <div class="car-meta"><span class="car-year">2017</span><span class="car-type">SUV</span></div>
+          <h3 class="car-name sold-card-name">Range Rover Evoque</h3>
+          <p class="car-desc">Luxury compact SUV · Terrain Response system · Premium leather interior · Advanced safety features.</p>
+          <div class="car-specs-row"><span class="spec-tag">2.0L Turbo</span><span class="spec-tag">AWD</span><span class="spec-tag">48,000km</span></div>
           <div class="car-footer">
-            <div class="car-price sold-card-price">Rs. 33,500,000</div>
+            <div class="car-price sold-card-price">Rs. 21,500,000</div>
             <div class="sold-date">✓ Sold — February 2025</div>
           </div>
         </div>
@@ -555,6 +584,26 @@
       <article class="car-card reveal" style="pointer-events:none; opacity:0.85;">
         <div class="car-img-box" style="position:relative; overflow:hidden;">
           <img src="images/sold_4.jpeg"
+               alt="Porsche Cayman GTS"
+               style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(40%) brightness(0.75);" loading="lazy"/>
+          <div class="sold-overlay-stamp"><div class="sold-stamp">SOLD</div></div>
+        </div>
+        <div class="car-info">
+          <div class="car-meta"><span class="car-year">2022</span><span class="car-type">Coupe</span></div>
+          <h3 class="car-name sold-card-name">Porsche Cayman GTS</h3>
+          <p class="car-desc">4.0L NA · PDK · Sport Chrono · PASM. Zero compromise.</p>
+          <div class="car-specs-row"><span class="spec-tag">4.0L</span><span class="spec-tag">PDK</span><span class="spec-tag">19,800km</span></div>
+          <div class="car-footer">
+            <div class="car-price sold-card-price">Rs. 52,000,000</div>
+            <div class="sold-date">✓ Sold — November 2024</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Sold 4: Porsche Cayman GTS -->
+      <article class="car-card reveal" style="pointer-events:none; opacity:0.85;">
+        <div class="car-img-box" style="position:relative; overflow:hidden;">
+          <img src="images/sold_5.jpeg"
                alt="Porsche Cayman GTS"
                style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(40%) brightness(0.75);" loading="lazy"/>
           <div class="sold-overlay-stamp"><div class="sold-stamp">SOLD</div></div>
@@ -1311,7 +1360,16 @@
 <a href="https://wa.me/94778901234" class="whatsapp-float" target="_blank" title="Chat with us on WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
-<script src="script.js"></script>
+
+<script>
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.getElementById("navLinks");
+
+hamburger.addEventListener("click", () => {
+  navLinks.classList.toggle("active");
+  hamburger.classList.toggle("active");
+});
+</script>
 
 </body>
 </html>
